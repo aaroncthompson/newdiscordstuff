@@ -6,7 +6,7 @@ module.exports = {
 	async execute(interaction) {
 		if (!interaction.isModalSubmit()) return;
 
-		if (interaction.customId === 'modalT') {
+		if (interaction.customId === 'modal') {
 			await interaction.reply({ content: "Modal received", ephemeral: true})
 		}
 
@@ -52,7 +52,7 @@ module.exports = {
 			.addComponents(confirmButton, saveButton);
 
 		const response = await interaction.reply({
-			content: "**This is a preview - please take a look and confirm if you'd like to post this to #rsvp.**",
+			content: "**This is a preview - please take a look and confirm if you'd like to post this to #rsvp. Will time out after 1 hour!!**",
 			embeds: [eventEmbed],
 			components: [row],
 			ephemeral: true,
@@ -64,7 +64,7 @@ module.exports = {
 
 		const collector = interaction.channel.createMessageComponentCollector({
     			filter,
-		    	time: 60000, // 60 seconds
+		    	time: 3600000, // 1 hour
 		});
 
 		collector.on('collect', async (interaction) => {
@@ -101,7 +101,13 @@ module.exports = {
 					],
 				})
 
-				const channel = interaction.client.channels.cache.get('1047779404622856192')
+				const botjunk = '1047779404622856192'
+				const rsvp = '1049102286430945280'
+
+				// CHANGE BETWEEN BOTJUNK AND RSVP HERE
+				let postChannel = botjunk
+
+				const channel = interaction.client.channels.cache.get(postChannel)
 				// channel.send({ embeds: [ eventEmbed ] })
 				const theEventPost = await channel.send({ embeds: [ eventEmbed ] });
 				//const reactionEmoji = theEventPost.guild.emojis.cache.find(emoji => emoji.name === `${eventReact}`);
@@ -109,7 +115,7 @@ module.exports = {
 				// the first react should be done by the actual react role bit
 				//theEventPost.react(reactionEmoji)
 
-        			await interaction.update({ content: `**Your event has been posted!**\nType \`&rr add 1047779404622856192 ${theEventPost.id} :Josh: ${randomRoleName}\`\nI swear I'm working on making it so you don't have to do this part :cry:`, components: [] });
+        			await interaction.update({ content: `**Your event has been posted!**\nType \`&rr add ${postChannel} ${theEventPost.id} :Josh: ${randomRoleName}\`\nI swear I'm working on making it so you don't have to do this part :cry:`, components: [] });
 
     			} else if (interaction.customId === 'saveButton') {
         			await interaction.update({ content: '**NOT YET IMPLEMENTED**' });
@@ -118,7 +124,7 @@ module.exports = {
 
 		collector.on('end', async (collected) => {
     			if (collected.size === 0) {
-        			await interaction.editReply({ content: '**Confirmation not received within 1 minute - cancelling!**', components: [] });
+        			await interaction.editReply({ content: 'Confirmation not received within 1 hour - cancelling! If this is annoying, tell Aaron.**', components: [] });
     			}
 		});
 

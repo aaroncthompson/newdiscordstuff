@@ -17,7 +17,7 @@ module.exports = {
 
 		// get requester's nickname
 		const interactionUser = await interaction.guild.members.fetch(interaction.user.id)
-		const nickName = interactionUser.nickname
+		const nickName = interactionUser.displayName
 
 		// get requester's picture
 		const requesterAvatar = interactionUser.displayAvatarURL()
@@ -52,7 +52,7 @@ module.exports = {
 			.addComponents(confirmButton, saveButton);
 
 		const response = await interaction.reply({
-			content: "**This is a preview - please take a look and confirm if you'd like to post this to #rsvp. Will time out after 1 hour!!**",
+			content: "**This is a preview - please take a look and confirm if you'd like to post this to #rsvp. Will time out after TEN SECONDS!!**",
 			embeds: [eventEmbed],
 			components: [row],
 			ephemeral: true,
@@ -64,7 +64,8 @@ module.exports = {
 
 		const collector = interaction.channel.createMessageComponentCollector({
     			filter,
-		    	time: 3600000, // 1 hour
+		    	//time: 3600000, // 1 hour
+			time: 10000,
 		});
 
 		collector.on('collect', async (interaction) => {
@@ -73,6 +74,9 @@ module.exports = {
 
 				// create a role with a randomly generated name to use for this event
 				const randomRoleName = Math.floor(Math.random() * 1000000)
+
+				// COMMENT OPEN HERE FOR DEBUG
+
 				const theNewRole = await interaction.guild.roles.create({ name: `${randomRoleName}`, mentionable: "true", reason: `Creating new role for ${eventName}`, permissions: [] })
 					.then(console.log)
 					.catch(console.error);
@@ -80,6 +84,7 @@ module.exports = {
 				const roleId = interaction.guild.roles.cache.find(role => role.name === `${randomRoleName}`);
 
 				// create a private channel that only the event creator and the role can access
+
 				const theChannel = await interaction.guild.channels.create({
 					name: `${eventName}`,
 					parent: "1050293996083232769",
@@ -100,12 +105,13 @@ module.exports = {
 						},
 					],
 				})
+				// COMMENT CLOSE HERE FOR DEBUG
 
 				const botjunk = '1047779404622856192'
 				const rsvp = '1049102286430945280'
 
 				// CHANGE BETWEEN BOTJUNK AND RSVP HERE
-				let postChannel = botjunk
+				let postChannel = rsvp
 
 				const channel = interaction.client.channels.cache.get(postChannel)
 				// channel.send({ embeds: [ eventEmbed ] })
@@ -124,7 +130,8 @@ module.exports = {
 
 		collector.on('end', async (collected) => {
     			if (collected.size === 0) {
-        			await interaction.editReply({ content: 'Confirmation not received within 1 hour - cancelling! If this is annoying, tell Aaron.**', components: [] });
+                                confirmButton.setDisabled(true);
+        			await interaction.editReply({ content: '**Confirmation not received within 10 seconds - cancelling!**', components: [] });
     			}
 		});
 

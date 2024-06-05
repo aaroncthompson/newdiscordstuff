@@ -6,11 +6,6 @@ module.exports = {
 	.setName("event")
 	.setDescription('Launches a little form to build your event. Report any issues to Aaron!'),
 
-	// this is probably unnecessary now
-	async execute(interaction) {
-                await interaction.reply({ content: 'Secret Pong!', ephemeral: true });
-        },
-
 	async execute(interaction) {
 		const modal = new ModalBuilder()
 			.setTitle('Create an event')
