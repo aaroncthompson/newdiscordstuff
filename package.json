@@ -1,0 +1,14 @@
+{
+  "name": "ayurbot",
+  "version": "1.0.0",
+  "description": "poor man's event management bot by aaron",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ayurjake",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  }
+}
